@@ -46,6 +46,7 @@ public class ZKClient {
     public List<String> getChildren(String path) throws Exception {
         return client.getChildren().forPath(path);
     }
+
     public void destroy() {
         try {
             if (getClient() != null) {
@@ -53,6 +54,14 @@ public class ZKClient {
             }
         } catch (Exception e) {
             logger.error("stop zookeeper client error {}", e.getMessage());
+        }
+    }
+
+    public void setData(String path, String data) throws Exception {
+        if (client.checkExists().forPath(path) == null) {
+            createNode(path, data);
+        } else {
+            client.setData().forPath(path, data.getBytes());
         }
     }
 }

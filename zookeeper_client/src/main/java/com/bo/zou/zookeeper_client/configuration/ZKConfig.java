@@ -1,5 +1,6 @@
 package com.bo.zou.zookeeper_client.configuration;
 
+import com.bo.zou.zookeeper_client.util.DistributionIdGen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class ZKConfig {
     @Bean(initMethod = "init", destroyMethod = "destroy")
     public ZKClient zkClient() {
         return new ZKClient(environment.getRequiredProperty("zookeeper.server"));
+    }
+
+    @Bean
+    public DistributionIdGen distributionIdGen() {
+        return new DistributionIdGen(zkClient());
     }
 
 

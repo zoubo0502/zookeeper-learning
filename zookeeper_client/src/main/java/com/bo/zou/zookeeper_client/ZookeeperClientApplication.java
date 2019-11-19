@@ -8,7 +8,6 @@ public class ZookeeperClientApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ZookeeperClientApplication.class, args);
-
 	}
 
 }

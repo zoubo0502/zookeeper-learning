@@ -19,6 +19,8 @@ public class Client implements ApplicationRunner {
 
     private static final String SERVICE_PATH = "/service/provider";
 
+    private static final String CONFIG_PATH = "/config";
+
     private List<String> urls = new ArrayList<>();
 
     @Autowired
@@ -27,6 +29,11 @@ public class Client implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("consumer started");
+        configuration();
+        serviceDiscovery();
+    }
+
+    private void serviceDiscovery() throws Exception {
         final PathChildrenCache childrenCache = new PathChildrenCache(zkClient.getClient(), SERVICE_PATH, false);
         childrenCache.getListenable().addListener(new PathChildrenCacheListener() {
             @Override
@@ -37,6 +44,19 @@ public class Client implements ApplicationRunner {
             }
         });
         childrenCache.start();
+    }
+
+    private void configuration() throws Exception {
+        final NodeCache nodeCache = new NodeCache(zkClient.getClient(), CONFIG_PATH, false);
+        nodeCache.getListenable().addListener(new NodeCacheListener() {
+            @Override
+            public void nodeChanged() throws Exception {
+                System.out.println("=================config updated=====================");
+                System.out.println(zkClient.getData(CONFIG_PATH));
+                System.out.println("=================output finished=====================");
+            }
+        });
+        nodeCache.start();
     }
 
     public String getUrl() throws Exception {
